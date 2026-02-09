@@ -35,7 +35,7 @@ class DevicePreviewState with _$DevicePreviewState {
 /// A [DevicePreview] configuration snapshot that can be
 /// serialized to be persisted between sessions.
 @freezed
-class DevicePreviewData with _$DevicePreviewData {
+abstract class DevicePreviewData with _$DevicePreviewData {
   /// Create a new [DevicePreviewData] configuration from all
   /// properties.
   const factory DevicePreviewData({
@@ -88,6 +88,21 @@ class DevicePreviewData with _$DevicePreviewData {
 
     /// The custom device configuration
     @Default(null) CustomDeviceInfoData? customDevice,
+
+    /// Indicate whether multi-device mode is active.
+    @Default(false) bool isMultiDeviceMode,
+
+    /// The list of devices displayed in multi-device mode.
+    @Default(<MultiDeviceEntry>[]) List<MultiDeviceEntry> multiDeviceEntries,
+
+    /// Indicate whether interaction sync is enabled in multi-device mode.
+    @Default(true) bool isInteractionSyncEnabled,
+
+    /// The layout mode for multi-device display.
+    @Default(MultiDeviceLayout.row) MultiDeviceLayout multiDeviceLayout,
+
+    /// The global scale factor for multi-device preview (0.25 to 3.0).
+    @Default(1.0) double multiDeviceScale,
   }) = _DevicePreviewData;
 
   factory DevicePreviewData.fromJson(Map<String, dynamic> json) =>
@@ -96,7 +111,7 @@ class DevicePreviewData with _$DevicePreviewData {
 
 /// Info about a device and its frame.
 @freezed
-class CustomDeviceInfoData with _$CustomDeviceInfoData {
+abstract class CustomDeviceInfoData with _$CustomDeviceInfoData {
   /// Create a new device info.
   const factory CustomDeviceInfoData({
     /// Identifier of the device.
@@ -167,4 +182,32 @@ enum DevicePreviewToolBarPositionData {
   top,
   left,
   right,
+}
+
+/// Layout mode for multi-device display.
+enum MultiDeviceLayout {
+  /// Horizontal scrollable row.
+  row,
+
+  /// Adaptive grid that wraps based on available space.
+  grid,
+}
+
+/// An entry representing a single device in multi-device mode.
+@freezed
+abstract class MultiDeviceEntry with _$MultiDeviceEntry {
+  /// Create a new multi-device entry.
+  const factory MultiDeviceEntry({
+    /// Unique identifier for this entry.
+    required String id,
+
+    /// The device identifier (same format as DevicePreviewData.deviceIdentifier).
+    required String deviceIdentifier,
+
+    /// The orientation for this specific device.
+    @Default(Orientation.portrait) Orientation orientation,
+  }) = _MultiDeviceEntry;
+
+  factory MultiDeviceEntry.fromJson(Map<String, dynamic> json) =>
+      _$MultiDeviceEntryFromJson(json);
 }

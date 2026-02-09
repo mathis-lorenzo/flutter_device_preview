@@ -241,4 +241,94 @@ extension DevicePreviewStateHelperExtensions on DevicePreviewStore {
   /// Updates the custom device configuration.
   void updateCustomDevice(CustomDeviceInfoData data) =>
       this.data = this.data.copyWith(customDevice: data);
+
+  // --- Multi-device mode methods ---
+
+  /// Toggle between single-device and multi-device mode.
+  void toggleMultiDeviceMode() {
+    if (!data.isMultiDeviceMode) {
+      // Entering multi-device: seed with current single device
+      final currentId =
+          data.deviceIdentifier ?? defaultDevice.identifier.toString();
+      data = data.copyWith(
+        isMultiDeviceMode: true,
+        multiDeviceEntries: [
+          MultiDeviceEntry(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            deviceIdentifier: currentId,
+            orientation: data.orientation,
+          ),
+        ],
+      );
+    } else {
+      // Exiting multi-device: use first entry as the single device
+      final first = data.multiDeviceEntries.firstOrNull;
+      data = data.copyWith(
+        isMultiDeviceMode: false,
+        deviceIdentifier: first?.deviceIdentifier ?? data.deviceIdentifier,
+        orientation: first?.orientation ?? data.orientation,
+      );
+    }
+  }
+
+  /// Add a device to the multi-device view.
+  void addDeviceToMultiView(DeviceIdentifier id) {
+    final entries = List<MultiDeviceEntry>.from(data.multiDeviceEntries);
+    entries.add(MultiDeviceEntry(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      deviceIdentifier: id.toString(),
+    ));
+    data = data.copyWith(multiDeviceEntries: entries);
+  }
+
+  /// Remove a device from the multi-device view by its entry ID.
+  void removeDeviceFromMultiView(String entryId) {
+    final entries =
+        data.multiDeviceEntries.where((e) => e.id != entryId).toList();
+    if (entries.isEmpty) {
+      toggleMultiDeviceMode();
+      return;
+    }
+    data = data.copyWith(multiDeviceEntries: entries);
+  }
+
+  /// Rotate a specific device entry in multi-device mode.
+  void rotateMultiDeviceEntry(String entryId) {
+    final entries = data.multiDeviceEntries.map((e) {
+      if (e.id == entryId) {
+        final index = (e.orientation.index + 1) % Orientation.values.length;
+        return e.copyWith(orientation: Orientation.values[index]);
+      }
+      return e;
+    }).toList();
+    data = data.copyWith(multiDeviceEntries: entries);
+  }
+
+  /// Toggle interaction sync on/off.
+  void toggleInteractionSync() {
+    data = data.copyWith(
+      isInteractionSyncEnabled: !data.isInteractionSyncEnabled,
+    );
+  }
+
+  /// Set the multi-device layout mode.
+  void setMultiDeviceLayout(MultiDeviceLayout layout) {
+    data = data.copyWith(multiDeviceLayout: layout);
+  }
+
+  /// Set the global scale for multi-device preview.
+  void setMultiDeviceScale(double scale) {
+    data = data.copyWith(multiDeviceScale: scale.clamp(0.25, 3.0));
+  }
+
+  /// Resolve a device identifier string to a [DeviceInfo].
+  DeviceInfo resolveDeviceInfo(String deviceIdentifier) {
+    if (deviceIdentifier == CustomDeviceIdentifier.identifier) {
+      return CustomDeviceInfo(data.customDevice!);
+    }
+    return devices.firstWhere(
+      (x) => x.identifier.toString() == deviceIdentifier,
+      orElse: () => devices.first,
+    );
+  }
 }

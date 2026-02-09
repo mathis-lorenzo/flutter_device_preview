@@ -6,95 +6,124 @@ part of 'state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_DevicePreviewData _$$_DevicePreviewDataFromJson(Map<String, dynamic> json) =>
-    _$_DevicePreviewData(
-      isToolbarVisible: json['isToolbarVisible'] as bool? ?? true,
-      isEnabled: json['isEnabled'] as bool? ?? true,
-      orientation:
-          $enumDecodeNullable(_$OrientationEnumMap, json['orientation']) ??
-              Orientation.portrait,
-      deviceIdentifier: json['deviceIdentifier'] as String?,
-      locale: json['locale'] as String? ?? 'en-US',
-      isFrameVisible: json['isFrameVisible'] as bool? ?? true,
-      isDarkMode: json['isDarkMode'] as bool? ?? false,
-      boldText: json['boldText'] as bool? ?? false,
-      isVirtualKeyboardVisible:
-          json['isVirtualKeyboardVisible'] as bool? ?? false,
-      disableAnimations: json['disableAnimations'] as bool? ?? false,
-      highContrast: json['highContrast'] as bool? ?? false,
-      accessibleNavigation: json['accessibleNavigation'] as bool? ?? false,
-      invertColors: json['invertColors'] as bool? ?? false,
-      pluginData: (json['pluginData'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as Map<String, dynamic>),
-          ) ??
-          const <String, Map<String, dynamic>>{},
-      textScaleFactor: (json['textScaleFactor'] as num?)?.toDouble() ?? 1.0,
-      settings: json['settings'] == null
-          ? null
-          : DevicePreviewSettingsData.fromJson(
-              json['settings'] as Map<String, dynamic>),
-      customDevice: json['customDevice'] == null
-          ? null
-          : CustomDeviceInfoData.fromJson(
-              json['customDevice'] as Map<String, dynamic>),
-    );
+_DevicePreviewData _$DevicePreviewDataFromJson(
+  Map<String, dynamic> json,
+) => _DevicePreviewData(
+  isToolbarVisible: json['isToolbarVisible'] as bool? ?? true,
+  isEnabled: json['isEnabled'] as bool? ?? true,
+  orientation:
+      $enumDecodeNullable(_$OrientationEnumMap, json['orientation']) ??
+      Orientation.portrait,
+  deviceIdentifier: json['deviceIdentifier'] as String?,
+  locale: json['locale'] as String? ?? 'en-US',
+  isFrameVisible: json['isFrameVisible'] as bool? ?? true,
+  isDarkMode: json['isDarkMode'] as bool? ?? false,
+  boldText: json['boldText'] as bool? ?? false,
+  isVirtualKeyboardVisible: json['isVirtualKeyboardVisible'] as bool? ?? false,
+  disableAnimations: json['disableAnimations'] as bool? ?? false,
+  highContrast: json['highContrast'] as bool? ?? false,
+  accessibleNavigation: json['accessibleNavigation'] as bool? ?? false,
+  invertColors: json['invertColors'] as bool? ?? false,
+  pluginData:
+      (json['pluginData'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Map<String, dynamic>),
+      ) ??
+      const <String, Map<String, dynamic>>{},
+  textScaleFactor: (json['textScaleFactor'] as num?)?.toDouble() ?? 1.0,
+  settings: json['settings'] == null
+      ? null
+      : DevicePreviewSettingsData.fromJson(
+          json['settings'] as Map<String, dynamic>,
+        ),
+  customDevice: json['customDevice'] == null
+      ? null
+      : CustomDeviceInfoData.fromJson(
+          json['customDevice'] as Map<String, dynamic>,
+        ),
+  isMultiDeviceMode: json['isMultiDeviceMode'] as bool? ?? false,
+  multiDeviceEntries:
+      (json['multiDeviceEntries'] as List<dynamic>?)
+          ?.map((e) => MultiDeviceEntry.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <MultiDeviceEntry>[],
+  isInteractionSyncEnabled: json['isInteractionSyncEnabled'] as bool? ?? true,
+  multiDeviceLayout:
+      $enumDecodeNullable(
+        _$MultiDeviceLayoutEnumMap,
+        json['multiDeviceLayout'],
+      ) ??
+      MultiDeviceLayout.row,
+  multiDeviceScale: (json['multiDeviceScale'] as num?)?.toDouble() ?? 1.0,
+);
 
-Map<String, dynamic> _$$_DevicePreviewDataToJson(
-        _$_DevicePreviewData instance) =>
-    <String, dynamic>{
-      'isToolbarVisible': instance.isToolbarVisible,
-      'isEnabled': instance.isEnabled,
-      'orientation': _$OrientationEnumMap[instance.orientation],
-      'deviceIdentifier': instance.deviceIdentifier,
-      'locale': instance.locale,
-      'isFrameVisible': instance.isFrameVisible,
-      'isDarkMode': instance.isDarkMode,
-      'boldText': instance.boldText,
-      'isVirtualKeyboardVisible': instance.isVirtualKeyboardVisible,
-      'disableAnimations': instance.disableAnimations,
-      'highContrast': instance.highContrast,
-      'accessibleNavigation': instance.accessibleNavigation,
-      'invertColors': instance.invertColors,
-      'pluginData': instance.pluginData,
-      'textScaleFactor': instance.textScaleFactor,
-      'settings': instance.settings,
-      'customDevice': instance.customDevice,
-    };
+Map<String, dynamic> _$DevicePreviewDataToJson(
+  _DevicePreviewData instance,
+) => <String, dynamic>{
+  'isToolbarVisible': instance.isToolbarVisible,
+  'isEnabled': instance.isEnabled,
+  'orientation': _$OrientationEnumMap[instance.orientation]!,
+  'deviceIdentifier': instance.deviceIdentifier,
+  'locale': instance.locale,
+  'isFrameVisible': instance.isFrameVisible,
+  'isDarkMode': instance.isDarkMode,
+  'boldText': instance.boldText,
+  'isVirtualKeyboardVisible': instance.isVirtualKeyboardVisible,
+  'disableAnimations': instance.disableAnimations,
+  'highContrast': instance.highContrast,
+  'accessibleNavigation': instance.accessibleNavigation,
+  'invertColors': instance.invertColors,
+  'pluginData': instance.pluginData,
+  'textScaleFactor': instance.textScaleFactor,
+  'settings': instance.settings,
+  'customDevice': instance.customDevice,
+  'isMultiDeviceMode': instance.isMultiDeviceMode,
+  'multiDeviceEntries': instance.multiDeviceEntries,
+  'isInteractionSyncEnabled': instance.isInteractionSyncEnabled,
+  'multiDeviceLayout': _$MultiDeviceLayoutEnumMap[instance.multiDeviceLayout]!,
+  'multiDeviceScale': instance.multiDeviceScale,
+};
 
 const _$OrientationEnumMap = {
   Orientation.portrait: 'portrait',
   Orientation.landscape: 'landscape',
 };
 
-_$_CustomDeviceInfoData _$$_CustomDeviceInfoDataFromJson(
-        Map<String, dynamic> json) =>
-    _$_CustomDeviceInfoData(
-      id: json['id'] as String,
-      type: $enumDecode(_$DeviceTypeEnumMap, json['type']),
-      platform: $enumDecode(_$TargetPlatformEnumMap, json['platform']),
-      name: json['name'] as String,
-      rotatedSafeAreas: json['rotatedSafeAreas'] == null
-          ? null
-          : const NullableEdgeInsetsJsonConverter()
-              .fromJson(json['rotatedSafeAreas']),
-      safeAreas: const EdgeInsetsJsonConverter().fromJson(json['safeAreas']),
-      pixelRatio: (json['pixelRatio'] as num).toDouble(),
-      screenSize: const SizeJsonConverter().fromJson(json['screenSize']),
-    );
+const _$MultiDeviceLayoutEnumMap = {
+  MultiDeviceLayout.row: 'row',
+  MultiDeviceLayout.grid: 'grid',
+};
 
-Map<String, dynamic> _$$_CustomDeviceInfoDataToJson(
-        _$_CustomDeviceInfoData instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'type': _$DeviceTypeEnumMap[instance.type],
-      'platform': _$TargetPlatformEnumMap[instance.platform],
-      'name': instance.name,
-      'rotatedSafeAreas': const NullableEdgeInsetsJsonConverter()
-          .toJson(instance.rotatedSafeAreas),
-      'safeAreas': const EdgeInsetsJsonConverter().toJson(instance.safeAreas),
-      'pixelRatio': instance.pixelRatio,
-      'screenSize': const SizeJsonConverter().toJson(instance.screenSize),
-    };
+_CustomDeviceInfoData _$CustomDeviceInfoDataFromJson(
+  Map<String, dynamic> json,
+) => _CustomDeviceInfoData(
+  id: json['id'] as String,
+  type: $enumDecode(_$DeviceTypeEnumMap, json['type']),
+  platform: $enumDecode(_$TargetPlatformEnumMap, json['platform']),
+  name: json['name'] as String,
+  rotatedSafeAreas: json['rotatedSafeAreas'] == null
+      ? null
+      : const NullableEdgeInsetsJsonConverter().fromJson(
+          json['rotatedSafeAreas'],
+        ),
+  safeAreas: const EdgeInsetsJsonConverter().fromJson(json['safeAreas']),
+  pixelRatio: (json['pixelRatio'] as num).toDouble(),
+  screenSize: const SizeJsonConverter().fromJson(json['screenSize']),
+);
+
+Map<String, dynamic> _$CustomDeviceInfoDataToJson(
+  _CustomDeviceInfoData instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'type': _$DeviceTypeEnumMap[instance.type]!,
+  'platform': _$TargetPlatformEnumMap[instance.platform]!,
+  'name': instance.name,
+  'rotatedSafeAreas': const NullableEdgeInsetsJsonConverter().toJson(
+    instance.rotatedSafeAreas,
+  ),
+  'safeAreas': const EdgeInsetsJsonConverter().toJson(instance.safeAreas),
+  'pixelRatio': instance.pixelRatio,
+  'screenSize': const SizeJsonConverter().toJson(instance.screenSize),
+};
 
 const _$DeviceTypeEnumMap = {
   DeviceType.unknown: 'unknown',
@@ -114,32 +143,39 @@ const _$TargetPlatformEnumMap = {
   TargetPlatform.windows: 'windows',
 };
 
-_$_DevicePreviewSettingsData _$$_DevicePreviewSettingsDataFromJson(
-        Map<String, dynamic> json) =>
-    _$_DevicePreviewSettingsData(
-      toolbarPosition: $enumDecodeNullable(
-              _$DevicePreviewToolBarPositionDataEnumMap,
-              json['toolbarPosition']) ??
-          DevicePreviewToolBarPositionData.bottom,
-      toolbarTheme: $enumDecodeNullable(
-              _$DevicePreviewToolBarThemeDataEnumMap, json['toolbarTheme']) ??
-          DevicePreviewToolBarThemeData.dark,
-      backgroundTheme: $enumDecodeNullable(
-              _$DevicePreviewBackgroundThemeDataEnumMap,
-              json['backgroundTheme']) ??
-          DevicePreviewBackgroundThemeData.light,
-    );
+_DevicePreviewSettingsData _$DevicePreviewSettingsDataFromJson(
+  Map<String, dynamic> json,
+) => _DevicePreviewSettingsData(
+  toolbarPosition:
+      $enumDecodeNullable(
+        _$DevicePreviewToolBarPositionDataEnumMap,
+        json['toolbarPosition'],
+      ) ??
+      DevicePreviewToolBarPositionData.bottom,
+  toolbarTheme:
+      $enumDecodeNullable(
+        _$DevicePreviewToolBarThemeDataEnumMap,
+        json['toolbarTheme'],
+      ) ??
+      DevicePreviewToolBarThemeData.dark,
+  backgroundTheme:
+      $enumDecodeNullable(
+        _$DevicePreviewBackgroundThemeDataEnumMap,
+        json['backgroundTheme'],
+      ) ??
+      DevicePreviewBackgroundThemeData.light,
+);
 
-Map<String, dynamic> _$$_DevicePreviewSettingsDataToJson(
-        _$_DevicePreviewSettingsData instance) =>
-    <String, dynamic>{
-      'toolbarPosition':
-          _$DevicePreviewToolBarPositionDataEnumMap[instance.toolbarPosition],
-      'toolbarTheme':
-          _$DevicePreviewToolBarThemeDataEnumMap[instance.toolbarTheme],
-      'backgroundTheme':
-          _$DevicePreviewBackgroundThemeDataEnumMap[instance.backgroundTheme],
-    };
+Map<String, dynamic> _$DevicePreviewSettingsDataToJson(
+  _DevicePreviewSettingsData instance,
+) => <String, dynamic>{
+  'toolbarPosition':
+      _$DevicePreviewToolBarPositionDataEnumMap[instance.toolbarPosition]!,
+  'toolbarTheme':
+      _$DevicePreviewToolBarThemeDataEnumMap[instance.toolbarTheme]!,
+  'backgroundTheme':
+      _$DevicePreviewBackgroundThemeDataEnumMap[instance.backgroundTheme]!,
+};
 
 const _$DevicePreviewToolBarPositionDataEnumMap = {
   DevicePreviewToolBarPositionData.bottom: 'bottom',
@@ -157,3 +193,19 @@ const _$DevicePreviewBackgroundThemeDataEnumMap = {
   DevicePreviewBackgroundThemeData.dark: 'dark',
   DevicePreviewBackgroundThemeData.light: 'light',
 };
+
+_MultiDeviceEntry _$MultiDeviceEntryFromJson(Map<String, dynamic> json) =>
+    _MultiDeviceEntry(
+      id: json['id'] as String,
+      deviceIdentifier: json['deviceIdentifier'] as String,
+      orientation:
+          $enumDecodeNullable(_$OrientationEnumMap, json['orientation']) ??
+          Orientation.portrait,
+    );
+
+Map<String, dynamic> _$MultiDeviceEntryToJson(_MultiDeviceEntry instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'deviceIdentifier': instance.deviceIdentifier,
+      'orientation': _$OrientationEnumMap[instance.orientation]!,
+    };

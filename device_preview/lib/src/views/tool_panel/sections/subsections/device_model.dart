@@ -13,9 +13,17 @@ part 'custom_device.dart';
 /// A page for picking a simulated device model.
 class DeviceModelPicker extends StatefulWidget {
   /// Create a new page for picking a simulated device model.
+  ///
+  /// If [onDeviceSelected] is provided, it is called instead of the
+  /// default behavior (selecting the device in single-device mode).
   const DeviceModelPicker({
     super.key,
+    this.onDeviceSelected,
   });
+
+  /// Optional callback invoked when a device is selected.
+  /// Used by multi-device mode to add devices instead of switching.
+  final void Function(DeviceInfo device)? onDeviceSelected;
 
   @override
   State<DeviceModelPicker> createState() => _DeviceModelPickerState();
@@ -84,6 +92,7 @@ class _DeviceModelPickerState extends State<DeviceModelPicker>
           ..._allPlatforms.map(
             (e) => _PlatformModelPicker(
               platform: e,
+              onDeviceSelected: widget.onDeviceSelected,
             ),
           ),
           CustomScrollView(
@@ -100,9 +109,11 @@ class _DeviceModelPickerState extends State<DeviceModelPicker>
 class _PlatformModelPicker extends StatelessWidget {
   const _PlatformModelPicker({
     required this.platform,
+    this.onDeviceSelected,
   });
 
   final TargetPlatform platform;
+  final void Function(DeviceInfo device)? onDeviceSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +143,7 @@ class _PlatformModelPicker extends StatelessWidget {
                 ...e.value.map(
                   (d) => DeviceTile(
                     info: d,
+                    onDeviceSelected: onDeviceSelected,
                   ),
                 ),
               ],
@@ -182,9 +194,14 @@ class DeviceTile extends StatelessWidget {
   const DeviceTile({
     super.key,
     required this.info,
+    this.onDeviceSelected,
   });
 
   final DeviceInfo info;
+
+  /// Optional callback invoked when this device is tapped.
+  /// If null, the default single-device selection is used.
+  final void Function(DeviceInfo device)? onDeviceSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -198,8 +215,12 @@ class DeviceTile extends StatelessWidget {
         ),
       ),
       onTap: () {
-        final state = context.read<DevicePreviewStore>();
-        state.selectDevice(info.identifier);
+        if (onDeviceSelected != null) {
+          onDeviceSelected!(info);
+        } else {
+          final state = context.read<DevicePreviewStore>();
+          state.selectDevice(info.identifier);
+        }
       },
     );
   }

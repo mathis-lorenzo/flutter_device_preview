@@ -10,6 +10,7 @@ import 'package:device_preview/src/utilities/media_query_observer.dart';
 import 'package:device_preview/src/views/theme.dart';
 import 'package:device_preview/src/views/tool_panel/sections/accessibility.dart';
 import 'package:device_preview/src/views/tool_panel/sections/device.dart';
+import 'package:device_preview/src/views/tool_panel/sections/multi_device.dart';
 import 'package:device_preview/src/views/tool_panel/sections/settings.dart';
 import 'package:device_preview/src/views/tool_panel/sections/system.dart';
 import 'package:device_preview/src/views/tool_panel/tool_panel.dart';
@@ -18,9 +19,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'interaction/interaction_sync.dart';
 import 'locales/default_locales.dart';
 import 'utilities/screenshot.dart';
 import 'views/large.dart';
+import 'views/multi_device_preview.dart';
 import 'views/small.dart';
 
 /// Simulates how the result of [builder] would render on different
@@ -110,6 +113,7 @@ class DevicePreview extends StatefulWidget {
   /// [AccessibilitySection] and [SettingsSection].
   static const List<Widget> defaultTools = <Widget>[
     DeviceSection(),
+    MultiDeviceSection(),
     SystemSection(),
     AccessibilitySection(),
     SettingsSection(),
@@ -368,6 +372,10 @@ class _DevicePreviewState extends State<DevicePreview> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Controller for synchronizing interactions across multi-device preview.
+  final InteractionSyncController _interactionSyncController =
+      InteractionSyncController();
+
   /// Whenever the [screenshot] is called, a new value is pushed to
   /// this stream.
   Stream<DeviceScreenshot> get onScreenshot => _onScreenshot!.stream;
@@ -406,6 +414,30 @@ class _DevicePreviewState extends State<DevicePreview> {
     if (oldWidget.storage != widget.storage && widget.storage != null) {
       storage = widget.storage!;
     }
+  }
+
+  @override
+  void dispose() {
+    _interactionSyncController.dispose();
+    _onScreenshot?.close();
+    super.dispose();
+  }
+
+  /// Builds either the single-device or multi-device preview area.
+  Widget _buildPreviewArea(BuildContext context) {
+    final isMultiDeviceMode = context.select(
+      (DevicePreviewStore store) => store.data.isMultiDeviceMode,
+    );
+
+    if (isMultiDeviceMode) {
+      return MultiDevicePreviewArea(
+        appBuilder: widget.builder,
+        backgroundColor: widget.backgroundColor,
+        padding: widget.padding,
+      );
+    }
+
+    return Builder(builder: _buildPreview);
   }
 
   Widget _buildPreview(BuildContext context) {
@@ -491,13 +523,20 @@ class _DevicePreviewState extends State<DevicePreview> {
       );
     }
 
-    return ChangeNotifierProvider(
-      create: (context) => DevicePreviewStore(
-        defaultDevice: widget.defaultDevice ?? Devices.ios.iPhone13,
-        devices: widget.devices,
-        locales: widget.availableLocales,
-        storage: storage,
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => DevicePreviewStore(
+            defaultDevice: widget.defaultDevice ?? Devices.ios.iPhone13,
+            devices: widget.devices,
+            locales: widget.availableLocales,
+            storage: storage,
+          ),
+        ),
+        ChangeNotifierProvider.value(
+          value: _interactionSyncController,
+        ),
+      ],
       builder: (context, child) {
         final isInitialized = context.select(
           (DevicePreviewStore store) => store.state.maybeMap(
@@ -612,9 +651,7 @@ class _DevicePreviewState extends State<DevicePreview> {
                               child: ClipRRect(
                                 borderRadius: borderRadius,
                                 child: isEnabled
-                                    ? Builder(
-                                        builder: _buildPreview,
-                                      )
+                                    ? _buildPreviewArea(context)
                                     : Builder(
                                         key: _appKey,
                                         builder: widget.builder,

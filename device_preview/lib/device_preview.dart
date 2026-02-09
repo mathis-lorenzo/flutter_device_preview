@@ -14,8 +14,11 @@ export 'src/locales/default_locales.dart';
 
 export 'src/utilities/screenshot.dart';
 
+export 'src/interaction/interaction_sync.dart';
+
 export 'src/views/tool_panel/sections/accessibility.dart';
 export 'src/views/tool_panel/sections/device.dart';
+export 'src/views/tool_panel/sections/multi_device.dart';
 export 'src/views/tool_panel/sections/section.dart';
 export 'src/views/tool_panel/sections/settings.dart';
 export 'src/views/tool_panel/sections/system.dart';
